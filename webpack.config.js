@@ -10,7 +10,7 @@ module.exports = env => ({
     extensions: ['.js', '.jsx'],
   },
   devtool: env === 'production' ? 'source-map' : 'cheap-eval-source-map',
-  entry: './src/index.js',
+  entry: './src/index.jsx',
   output: {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
