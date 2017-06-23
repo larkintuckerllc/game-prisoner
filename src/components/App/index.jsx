@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/database';
+import { FIREBASE_CONFIG, FIREBASE_EMAIL } from '../../strings';
 import { ServerException } from '../../util/exceptions';
 import Login from './Login';
 
@@ -9,10 +13,23 @@ class App extends Component {
     super(props);
     this.handleLogin = this.handleLogin.bind(this);
   }
+  componentDidMount() {
+    firebase.initializeApp(FIREBASE_CONFIG);
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user !== null) {
+        window.console.log('logged in');
+      }
+    });
+    firebase.auth().signOut();
+  }
   handleLogin(password) {
-    window.console.log(password);
-    return Promise.resolve().then(() => {
-      throw new ServerException('401');
+    return firebase.auth().signInWithEmailAndPassword(
+      FIREBASE_EMAIL,
+      password,
+    ).catch(() => {
+      // TODO: HANDLE DIFFERENT ERRORS
+      // throw new ServerException('401');
+      throw new ServerException('500');
     });
   }
   render() {
