@@ -35,9 +35,12 @@ class App extends Component {
           }
         });
         firebase.auth().signInWithEmailAndPassword(
-          FIREBASE_EMAIL,
+          // FIREBASE_EMAIL,
+          'wow',
           FIREBASE_PASSWORD,
-        );
+        ).catch(() => {
+          window.console.log('failed login');
+        });
       });
   }
   render() {
