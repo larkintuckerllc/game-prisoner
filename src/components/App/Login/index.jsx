@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { PropTypes } from 'prop-types';
-import { reduxForm, Field } from 'redux-form';
+import { reduxForm, Field, SubmissionError } from 'redux-form';
 import ValidatedTextInput from '../../ValidatedTextInput';
 import styles from './index.css';
 
@@ -17,7 +17,7 @@ const Login = ({ handleSubmit, submitting, submitFailed, valid }) => (
         />
       </div>
       {submitFailed && !submitting &&
-        <div className="alert alert-danger">Failed to login.</div>}
+        <div className="alert alert-danger">Failed to login</div>}
       <div className="form-group">
         <button
           type="submit"
@@ -47,7 +47,16 @@ class LoginSubmit extends Component {
     super();
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-  handleSubmit() {
+  handleSubmit({ password }) {
+    const { onLogin } = this.props;
+    return onLogin(password).catch((error) => {
+      if (process.env.NODE_ENV !== 'production' && error.name !== 'ServerException') {
+        window.console.log(error);
+        return;
+      }
+      if (error.message === '401') throw new SubmissionError({ password: '401' });
+      throw new SubmissionError({});
+    });
   }
   render() {
     return (
@@ -58,5 +67,6 @@ class LoginSubmit extends Component {
   }
 }
 LoginSubmit.propTypes = {
+  onLogin: PropTypes.func.isRequired,
 };
 export default LoginSubmit;
