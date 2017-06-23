@@ -26,3 +26,7 @@ export const setPresenceKey = (value) => {
     value,
   });
 };
+export const resetPresenceKey = () => ({
+  type: SET_PRESENCE_KEY,
+  value: null,
+});
