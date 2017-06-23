@@ -47,17 +47,25 @@ class App extends Component {
     firebase.auth().signOut();
   }
   render() {
-    return <Login onLogin={handleLogin} />;
+    const { authenticated, connected } = this.props;
+    if (!authenticated) return <Login onLogin={handleLogin} />;
+    if (!connected) return <div>Authenticated and Not Connected</div>;
+    return <div>Authenticated and Connected</div>;
   }
 }
 App.propTypes = {
+  authenticated: PropTypes.bool.isRequired,
+  connected: PropTypes.bool.isRequired,
   resetPresenceKey: PropTypes.func.isRequired,
   setAuthenticated: PropTypes.func.isRequired,
   setConnected: PropTypes.func.isRequired,
   setPresenceKey: PropTypes.func.isRequired,
 };
 export default connect(
-  null,
+  state => ({
+    authenticated: fromAuthenticated.getAuthenticated(state),
+    connected: fromConnected.getConnected(state),
+  }),
   {
     resetPresenceKey: fromPresenceKey.resetPresenceKey,
     setAuthenticated: fromAuthenticated.setAuthenticated,
