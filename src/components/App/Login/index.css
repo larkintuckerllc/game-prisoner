@@ -1,0 +1,14 @@
+#root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(240,240,240);
+}
+#rootForm {
+  text-align: center;
+}
