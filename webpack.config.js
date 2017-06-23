@@ -10,13 +10,23 @@ module.exports = env => ({
     extensions: ['.js', '.jsx'],
   },
   devtool: env === 'production' ? 'source-map' : 'cheap-eval-source-map',
-  entry: './src/index.jsx',
+  entry: [
+    'bootstrap-loader',
+    './src/index.jsx',
+  ],
   output: {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
   module: {
     rules: [
+      {
+        test: /bootstrap-sass\/assets\/javascripts\//,
+        loader: 'imports-loader',
+        options: {
+          jQuery: 'jquery',
+        },
+      },
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
