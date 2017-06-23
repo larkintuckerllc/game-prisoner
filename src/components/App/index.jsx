@@ -6,24 +6,30 @@ import 'firebase/auth';
 import 'firebase/database';
 import { FIREBASE_CONFIG, FIREBASE_EMAIL, FIREBASE_PASSWORD } from '../../strings';
 import * as fromAppBlocking from '../../ducks/appBlocking';
+import * as fromConnected from '../../ducks/connected';
+import * as fromPresenceKey from '../../ducks/presenceKey';
 
 class App extends Component {
   componentDidMount() {
+    const { setAppBlocking, setConnected, setPresenceKey } = this.props;
     firebase.initializeApp(FIREBASE_CONFIG);
     firebase.auth().signOut()
       .then(() => {
         firebase.auth().onAuthStateChanged((user) => {
-          window.console.log(user);
           if (user !== null) {
             const presenceRef = firebase.database().ref('presence');
             const connectedRef = firebase.database().ref('.info/connected');
             connectedRef.on('value', (snap) => {
               if (snap.val() === true) {
-                presenceRef.push(screen.id);
-                presenceRef.onDisconnect().remove();
-                window.console.log('connected');
+                const myPresenceRef = presenceRef.push(true);
+                myPresenceRef.then(({ key }) => {
+                  setPresenceKey(key);
+                  setAppBlocking(false);
+                });
+                myPresenceRef.onDisconnect().remove();
+                setConnected(true);
               } else {
-                window.console.log('disconnected');
+                setConnected(false);
               }
             });
           }
@@ -42,9 +48,16 @@ class App extends Component {
 }
 App.propTypes = {
   appBlocking: PropTypes.bool.isRequired,
+  setAppBlocking: PropTypes.func.isRequired,
+  setConnected: PropTypes.func.isRequired,
+  setPresenceKey: PropTypes.func.isRequired,
 };
 export default connect(
   state => ({
     appBlocking: fromAppBlocking.getAppBlocking(state),
-  }), null,
+  }), {
+    setAppBlocking: fromAppBlocking.setAppBlocking,
+    setConnected: fromConnected.setConnected,
+    setPresenceKey: fromPresenceKey.setPresenceKey,
+  },
 )(App);
