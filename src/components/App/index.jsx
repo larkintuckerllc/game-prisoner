@@ -7,7 +7,10 @@ import { FIREBASE_CONFIG, FIREBASE_EMAIL } from '../../strings';
 import { ServerException } from '../../util/exceptions';
 import * as fromAuthenticated from '../../ducks/authenticated';
 import * as fromConnected from '../../ducks/connected';
+import * as fromGameState from '../../ducks/gameState';
 import * as fromPresenceKey from '../../ducks/presenceKey';
+import Connecting from './Connecting';
+import Join from './Join';
 import Login from './Login';
 
 const handleLogin = password => (
@@ -21,13 +24,24 @@ const handleLogin = password => (
     throw new ServerException('500');
   })
 );
+const handleJoin = () => {
+  window.console.log('joined');
+  return Promise.resolve();
+};
 class App extends Component {
   componentDidMount() {
-    const { resetPresenceKey, setAuthenticated, setConnected, setPresenceKey } = this.props;
+    const {
+      resetPresenceKey,
+      setAuthenticated,
+      setConnected,
+      setGameState,
+      setPresenceKey,
+    } = this.props;
     firebase.initializeApp(FIREBASE_CONFIG);
     firebase.auth().onAuthStateChanged((user) => {
       if (user !== null) {
         setAuthenticated(true);
+        // PRESENCE
         const connectedRef = firebase.database().ref('.info/connected');
         connectedRef.on('value', (snap) => {
           if (snap.val() === true) {
@@ -42,34 +56,55 @@ class App extends Component {
             resetPresenceKey();
           }
         });
+        // STATE
+        firebase.database().ref('gameState').on('value', (snap) => {
+          const gameState = snap.val();
+          setGameState(gameState);
+        });
       }
     });
     firebase.auth().signOut();
   }
   render() {
-    const { authenticated, connected } = this.props;
+    const {
+      authenticated,
+      connected,
+      gameState,
+    } = this.props;
     if (!authenticated) return <Login onLogin={handleLogin} />;
-    if (!connected) return <div>Authenticated and Not Connected</div>;
-    return <div>Authenticated and Connected</div>;
+    if (!connected) return <Connecting />;
+    switch (gameState) {
+      case 'JOIN':
+        return <Join onJoin={handleJoin} />;
+      default:
+        return <div>DEFAULT</div>;
+    }
   }
 }
 App.propTypes = {
   authenticated: PropTypes.bool.isRequired,
   connected: PropTypes.bool.isRequired,
+  gameState: PropTypes.string,
   resetPresenceKey: PropTypes.func.isRequired,
   setAuthenticated: PropTypes.func.isRequired,
   setConnected: PropTypes.func.isRequired,
+  setGameState: PropTypes.func.isRequired,
   setPresenceKey: PropTypes.func.isRequired,
+};
+App.defaultProps = {
+  gameState: null,
 };
 export default connect(
   state => ({
     authenticated: fromAuthenticated.getAuthenticated(state),
     connected: fromConnected.getConnected(state),
+    gameState: fromGameState.getGameState(state),
   }),
   {
     resetPresenceKey: fromPresenceKey.resetPresenceKey,
     setAuthenticated: fromAuthenticated.setAuthenticated,
     setConnected: fromConnected.setConnected,
+    setGameState: fromGameState.setGameState,
     setPresenceKey: fromPresenceKey.setPresenceKey,
   },
 )(App);
