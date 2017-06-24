@@ -6,7 +6,7 @@ import styles from './index.css';
 const Playing = ({ gameState, onSelect }) => (
   <div id={styles.root}>
     <div id={styles.rootCards}>
-      { gameState === PAIRED && <div className={styles.Cover} /> }
+      { gameState === PAIRED && <div className={styles.Cover}>discuss with your partner</div> }
       <div className={styles.rootCardsFrame}>
         <div
           className={styles.rootCardsFrameCard}
@@ -29,7 +29,7 @@ const Playing = ({ gameState, onSelect }) => (
       </div>
     </div>
     <div id={styles.rootChat}>
-      { gameState === SELECTING && <div className={styles.Cover} /> }
+      { gameState === SELECTING && <div className={styles.Cover}>make selection</div> }
       Chat
     </div>
   </div>

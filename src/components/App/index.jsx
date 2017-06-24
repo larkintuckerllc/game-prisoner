@@ -10,6 +10,7 @@ import * as fromConnected from '../../ducks/connected';
 import * as fromGameState from '../../ducks/gameState';
 import * as fromJoined from '../../ducks/joined';
 import * as fromPresenceKey from '../../ducks/presenceKey';
+import * as fromSelected from '../../ducks/selected';
 import Connecting from './Connecting';
 import Join from './Join';
 import Login from './Login';
@@ -31,6 +32,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.handleJoin = this.handleJoin.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
   }
   componentDidMount() {
     const {
@@ -40,6 +42,7 @@ class App extends Component {
       setJoined,
       setGameState,
       setPresenceKey,
+      setSelected,
     } = this.props;
     firebase.initializeApp(FIREBASE_CONFIG);
     firebase.auth().onAuthStateChanged((user) => {
@@ -56,9 +59,10 @@ class App extends Component {
               presenceRef.onDisconnect().remove();
             });
           } else {
+            setSelected(false);
             setJoined(false);
-            setConnected(false);
             resetPresenceKey();
+            setConnected(false);
           }
         });
         // STATE
@@ -77,6 +81,8 @@ class App extends Component {
     return Promise.resolve();
   }
   handleSelect(cooperate) {
+    const { setSelected } = this.props;
+    setSelected(true);
     window.console.log(cooperate);
   }
   render() {
@@ -85,14 +91,8 @@ class App extends Component {
       connected,
       joined,
       gameState,
+      selected,
     } = this.props;
-    return (
-      <Playing
-        gameState={fromGameState.SELECTING}
-        onSelect={this.handleSelect}
-      />
-    );
-    /*
     if (!authenticated) return <Login onLogin={handleLogin} />;
     if (!connected) return <Connecting />;
     switch (gameState) {
@@ -101,11 +101,24 @@ class App extends Component {
         return <Waiting message="waiting for game to start" />;
       case fromGameState.PAIRED:
         if (!joined) return <Waiting message="waiting for next game" />;
-        return <div>PAIRED</div>;
+        return (
+          <Playing
+            gameState={gameState}
+            onSelect={() => {}}
+          />
+        );
+      case fromGameState.SELECTING:
+        if (!joined) return <Waiting message="waiting for next game" />;
+        if (selected) return <Waiting message="waiting for next round" />;
+        return (
+          <Playing
+            gameState={gameState}
+            onSelect={this.handleSelect}
+          />
+        );
       default:
         return <div>DEFAULT</div>;
     }
-    */
   }
 }
 App.propTypes = {
@@ -115,11 +128,13 @@ App.propTypes = {
   gameState: PropTypes.string,
   presenceKey: PropTypes.string,
   resetPresenceKey: PropTypes.func.isRequired,
+  selected: PropTypes.bool.isRequired,
   setAuthenticated: PropTypes.func.isRequired,
   setConnected: PropTypes.func.isRequired,
   setGameState: PropTypes.func.isRequired,
   setJoined: PropTypes.func.isRequired,
   setPresenceKey: PropTypes.func.isRequired,
+  setSelected: PropTypes.func.isRequired,
 };
 App.defaultProps = {
   gameState: null,
@@ -132,6 +147,7 @@ export default connect(
     joined: fromJoined.getJoined(state),
     gameState: fromGameState.getGameState(state),
     presenceKey: fromPresenceKey.getPresenceKey(state),
+    selected: fromSelected.getSelected(state),
   }),
   {
     resetPresenceKey: fromPresenceKey.resetPresenceKey,
@@ -140,5 +156,6 @@ export default connect(
     setGameState: fromGameState.setGameState,
     setJoined: fromJoined.setJoined,
     setPresenceKey: fromPresenceKey.setPresenceKey,
+    setSelected: fromSelected.setSelected,
   },
 )(App);
