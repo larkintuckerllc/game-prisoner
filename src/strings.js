@@ -8,5 +8,3 @@ export const FIREBASE_CONFIG = {
   messagingSenderId: '416710348817',
 };
 export const FIREBASE_EMAIL = 'player@game.prisoner';
-// TODO: EXPLORE HAVING TO PROVIDE
-export const FIREBASE_PASSWORD = 'GPonly00';

@@ -13,6 +13,7 @@ import * as fromPresenceKey from '../../ducks/presenceKey';
 import Connecting from './Connecting';
 import Join from './Join';
 import Login from './Login';
+import Waiting from './Waiting';
 
 const handleLogin = password => (
   firebase.auth().signInWithEmailAndPassword(
@@ -84,12 +85,12 @@ class App extends Component {
     if (!authenticated) return <Login onLogin={handleLogin} />;
     if (!connected) return <Connecting />;
     switch (gameState) {
-      case 'JOIN':
+      case fromGameState.JOIN:
         if (!joined) return <Join onJoin={this.handleJoin} />;
-        return <div>Joined</div>;
-      case 'PLAYING':
-        if (!joined) return <div>Waiting</div>;
-        return <div>Playing</div>;
+        return <Waiting message="waiting for game to start" />;
+      case fromGameState.PAIRED:
+        if (!joined) return <Waiting message="waiting for next game" />;
+        return <div>PAIRED</div>;
       default:
         return <div>DEFAULT</div>;
     }
