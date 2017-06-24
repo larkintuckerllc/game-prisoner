@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
-import { FIREBASE_CONFIG, FIREBASE_EMAIL } from '../../strings';
+import { FIREBASE_CONFIG, FIREBASE_EMAIL, RUNNING } from '../../strings';
 import { ServerException } from '../../util/exceptions';
 import * as fromAuthenticated from '../../ducks/authenticated';
 import * as fromConnected from '../../ducks/connected';
@@ -13,6 +13,7 @@ import * as fromPresenceKey from '../../ducks/presenceKey';
 import * as fromSelected from '../../ducks/selected';
 import Connecting from './Connecting';
 import Join from './Join';
+import Alert from './Alert';
 import Login from './Login';
 import Playing from './Playing';
 import Waiting from './Waiting';
@@ -93,6 +94,7 @@ class App extends Component {
       gameState,
       selected,
     } = this.props;
+    if (RUNNING) return <Alert message="running in another window" />;
     if (!authenticated) return <Login onLogin={handleLogin} />;
     if (!connected) return <Connecting />;
     switch (gameState) {

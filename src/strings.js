@@ -1,3 +1,12 @@
+// RUNNING
+export const RUNNING = window.localStorage.getItem('gamePrisonerRunning') !== null;
+if (!RUNNING) {
+  window.localStorage.setItem('gamePrisonerRunning', true);
+  window.addEventListener('unload', () => {
+    window.localStorage.removeItem('gamePrisonerRunning');
+  });
+}
+// REST OF THEM
 export const ACTION_PREFIX = 'app/';
 export const FIREBASE_CONFIG = {
   apiKey: 'AIzaSyD0xUucxtbfOc_0lp_w4nv69LIle2HTnNU',

@@ -9,15 +9,8 @@
   width: 100%;
   height: 100%;
   background-color: rgb(240,240,240);
-}
-#rootSpinner {
-  animation: spin 5s infinite linear;
   font-size: 64px;
-}
-@keyframes spin {
-  0% { transform: scale(1) rotate(0deg); }
-  30% { transform: scale(1) rotate(360deg); }
-  100% { transform: scale(1) rotate(360deg); }
+  text-align: center;
 }
 #rootMessage {
   padding: 16px;
