@@ -78,7 +78,9 @@ class App extends Component {
   handleJoin() {
     const { presenceKey, setJoined } = this.props;
     setJoined(true);
-    firebase.database().ref('joined').push(presenceKey);
+    const joinedRef = firebase.database().ref(`joined/${presenceKey}`);
+    joinedRef.set(true);
+    joinedRef.onDisconnect().remove();
     return Promise.resolve();
   }
   handleSelect(cooperate) {
