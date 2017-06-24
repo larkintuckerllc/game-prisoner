@@ -13,6 +13,7 @@ import * as fromPresenceKey from '../../ducks/presenceKey';
 import Connecting from './Connecting';
 import Join from './Join';
 import Login from './Login';
+import Playing from './Playing';
 import Waiting from './Waiting';
 
 const handleLogin = password => (
@@ -75,6 +76,9 @@ class App extends Component {
     firebase.database().ref('joined').push(presenceKey);
     return Promise.resolve();
   }
+  handleSelect(cooperate) {
+    window.console.log(cooperate);
+  }
   render() {
     const {
       authenticated,
@@ -82,6 +86,13 @@ class App extends Component {
       joined,
       gameState,
     } = this.props;
+    return (
+      <Playing
+        gameState={fromGameState.SELECTING}
+        onSelect={this.handleSelect}
+      />
+    );
+    /*
     if (!authenticated) return <Login onLogin={handleLogin} />;
     if (!connected) return <Connecting />;
     switch (gameState) {
@@ -94,6 +105,7 @@ class App extends Component {
       default:
         return <div>DEFAULT</div>;
     }
+    */
   }
 }
 App.propTypes = {
