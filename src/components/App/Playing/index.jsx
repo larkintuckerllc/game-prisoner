@@ -1,10 +1,11 @@
 import React from 'react';
 import { PropTypes } from 'prop-types';
 import { PAIRED, SELECTING } from '../../../ducks/gameState';
+import PlayingFrame from './PlayingFrame';
 import styles from './index.css';
 
 const Playing = ({ gameState, onSelect }) => (
-  <div id={styles.root}>
+  <PlayingFrame>
     <div id={styles.rootCards}>
       { gameState === PAIRED && <div className={styles.Cover}>discuss with your partner</div> }
       <div className={styles.rootCardsFrame}>
@@ -32,7 +33,7 @@ const Playing = ({ gameState, onSelect }) => (
       { gameState === SELECTING && <div className={styles.Cover}>make selection</div> }
       Chat
     </div>
-  </div>
+  </PlayingFrame>
 );
 Playing.propTypes = {
   gameState: PropTypes.string.isRequired,
