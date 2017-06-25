@@ -107,7 +107,7 @@ class App extends Component {
         if (!joined) return <Waiting message="waiting for next game" />;
         return (
           <Playing
-            gameState={gameState}
+            gameState={fromGameState.PAIRED}
             onSelect={() => {}}
           />
         );
@@ -116,7 +116,7 @@ class App extends Component {
         if (selected) return <Waiting message="waiting for next round" />;
         return (
           <Playing
-            gameState={gameState}
+            gameState={fromGameState.SELECTING}
             onSelect={this.handleSelect}
           />
         );

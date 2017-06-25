@@ -1,4 +1,4 @@
-#rootCards {
+#root {
   position: relative;
   flex: 1 0 50%;
   display: flex;
@@ -6,7 +6,24 @@
   width: 100%;
   overflow: hidden;
 }
-.Cover {
+.rootFrame {
+  position: relative;
+  flex: 0 0 40%;
+  padding: 20px;
+}
+.rootFrameCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border: 4px solid black;
+  border-radius: 10px;
+  background-color: rgb(255,255,255);
+  font-size: 64px;
+  overflow: hidden;
+}
+.rootCover {
   position: absolute;
   z-index: 1;
   display: flex;
@@ -21,27 +38,4 @@
   color: rgb(255,255,255);
   font-size: 32px;
   text-align: center;
-}
-.rootCardsFrame {
-  position: relative;
-  flex: 0 0 40%;
-  padding: 20px;
-}
-.rootCardsFrameCard {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  border: 4px solid black;
-  border-radius: 10px;
-  background-color: rgb(255,255,255);
-  font-size: 64px;
-  overflow: hidden;
-}
-#rootChat {
-  position: relative;
-  flex: 1 0 50%;
-  width: 100%;
-  background-color: green;
 }
