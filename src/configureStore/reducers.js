@@ -5,6 +5,7 @@ import connected from '../ducks/connected';
 import joined from '../ducks/joined';
 import gameState from '../ducks/gameState';
 import messages from '../ducks/messages';
+import paired from '../ducks/paired';
 import presenceKey from '../ducks/presenceKey';
 import selected from '../ducks/selected';
 
@@ -15,6 +16,7 @@ export default combineReducers({
   joined,
   gameState,
   messages,
+  paired,
   presenceKey,
   selected,
 });

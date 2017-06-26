@@ -10,7 +10,6 @@ import * as fromAuthenticated from '../../ducks/authenticated';
 import * as fromConnected from '../../ducks/connected';
 import * as fromGameState from '../../ducks/gameState';
 import * as fromJoined from '../../ducks/joined';
-import * as fromMessages from '../../ducks/messages';
 import * as fromPresenceKey from '../../ducks/presenceKey';
 import * as fromSelected from '../../ducks/selected';
 import Connecting from './Connecting';
@@ -91,21 +90,12 @@ class App extends Component {
     window.console.log(cooperate);
   }
   render() {
-    const { addMessage, messages } = this.props;
-    return (
-      <Playing
-        addMessage={addMessage}
-        gameState={fromGameState.PAIRED}
-        messages={messages}
-        onSelect={() => {}}
-      />
-    );
-    /*
     const {
       authenticated,
       connected,
       joined,
       gameState,
+      presenceKey,
       selected,
     } = this.props;
     if (RUNNING) return <Alert message="running in another window" />;
@@ -121,6 +111,7 @@ class App extends Component {
           <Playing
             gameState={fromGameState.PAIRED}
             onSelect={() => {}}
+            presenceKey={presenceKey}
           />
         );
       case fromGameState.SELECTING:
@@ -130,22 +121,20 @@ class App extends Component {
           <Playing
             gameState={fromGameState.SELECTING}
             onSelect={this.handleSelect}
+            presenceKey={presenceKey}
           />
         );
       default:
         return <div>DEFAULT</div>;
     }
-    */
   }
 }
 App.propTypes = {
-  addMessage: PropTypes.func.isRequired,
   authenticated: PropTypes.bool.isRequired,
   connected: PropTypes.bool.isRequired,
   joined: PropTypes.bool.isRequired,
   gameState: PropTypes.string,
   // eslint-disable-next-line
-  messages: PropTypes.array.isRequired,
   presenceKey: PropTypes.string,
   resetPresenceKey: PropTypes.func.isRequired,
   selected: PropTypes.bool.isRequired,
@@ -166,12 +155,10 @@ export default connect(
     connected: fromConnected.getConnected(state),
     joined: fromJoined.getJoined(state),
     gameState: fromGameState.getGameState(state),
-    messages: fromMessages.getMessages(state),
     presenceKey: fromPresenceKey.getPresenceKey(state),
     selected: fromSelected.getSelected(state),
   }),
   {
-    addMessage: fromMessages.addMessage,
     resetPresenceKey: fromPresenceKey.resetPresenceKey,
     setAuthenticated: fromAuthenticated.setAuthenticated,
     setConnected: fromConnected.setConnected,

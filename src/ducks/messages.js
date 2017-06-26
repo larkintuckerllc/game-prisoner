@@ -2,7 +2,9 @@ import { combineReducers } from 'redux';
 import { normalize, schema } from 'normalizr';
 import { createSelector } from 'reselect';
 import uuidv1 from 'uuid/v1';
+import firebase from 'firebase/app';
 import { ACTION_PREFIX } from '../strings';
+import { getPaired } from './paired';
 
 // API
 // REDUCER MOUNT POINT
@@ -50,13 +52,27 @@ const validMessage = message =>
   || message.self === undefined
   || typeof message.self !== 'boolean');
 // ACTION CREATORS
-export const addMessage = (message) => {
+export const addMessage = message => (dispatch, getState) => {
   if (!validMessage(message)) throw new Error();
-  return ({
-    type: ADD_MESSAGE_SUCCESS,
-    response: normalize({
-      id: uuidv1(),
-      ...message,
-    }, messageSchema),
-  });
+  const state = getState();
+  const paired = getPaired(state);
+  if (message.self) {
+    firebase.database().ref(`messages/${paired}`).push(message.body).then(() => {
+      dispatch({
+        type: ADD_MESSAGE_SUCCESS,
+        response: normalize({
+          id: uuidv1(),
+          ...message,
+        }, messageSchema),
+      });
+    });
+  } else {
+    dispatch({
+      type: ADD_MESSAGE_SUCCESS,
+      response: normalize({
+        id: uuidv1(),
+        ...message,
+      }, messageSchema),
+    });
+  }
 };
