@@ -18,6 +18,7 @@ import Join from './Join';
 import Alert from './Alert';
 import Login from './Login';
 import Playing from './Playing';
+import Score from './Score';
 import Waiting from './Waiting';
 
 const handleLogin = password => (
@@ -92,6 +93,13 @@ class App extends Component {
     setSelection(cooperate);
   }
   render() {
+    return (
+      <Score
+        self={true}
+        other={false}
+      />
+    );
+    /*
     const {
       authenticated,
       connected,
@@ -126,9 +134,15 @@ class App extends Component {
             presenceKey={presenceKey}
           />
         );
+      case fromGameState.SCORE:
+        if (!joined) return <Waiting message="waiting for next game" />;
+        return (
+          <Score />
+        );
       default:
         return <div>DEFAULT</div>;
     }
+    */
   }
 }
 App.propTypes = {

@@ -4,6 +4,7 @@ import { ACTION_PREFIX } from '../strings';
 export const JOIN = 'JOIN';
 export const PAIRED = 'PAIRED';
 export const SELECTING = 'SELECTING';
+export const SCORE = 'SCORE';
 // API
 // ACTIONS
 export const SET_GAME_STATE = `${ACTION_PREFIX}SET_GAME_STATE`;
