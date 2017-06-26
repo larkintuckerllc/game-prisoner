@@ -89,6 +89,13 @@ class App extends Component {
     window.console.log(cooperate);
   }
   render() {
+    return (
+      <Playing
+        gameState={fromGameState.PAIRED}
+        onSelect={() => {}}
+      />
+    );
+    /*
     const {
       authenticated,
       connected,
@@ -123,6 +130,7 @@ class App extends Component {
       default:
         return <div>DEFAULT</div>;
     }
+    */
   }
 }
 App.propTypes = {
