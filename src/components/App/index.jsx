@@ -12,6 +12,7 @@ import * as fromGameState from '../../ducks/gameState';
 import * as fromJoined from '../../ducks/joined';
 import * as fromPresenceKey from '../../ducks/presenceKey';
 import * as fromSelected from '../../ducks/selected';
+import * as fromSelection from '../../ducks/selection';
 import Connecting from './Connecting';
 import Join from './Join';
 import Alert from './Alert';
@@ -61,6 +62,7 @@ class App extends Component {
               presenceRef.onDisconnect().remove();
             });
           } else {
+            // TODO: CLEANING UP IF FALL OFFLINE
             setSelected(false);
             setJoined(false);
             resetPresenceKey();
@@ -85,9 +87,9 @@ class App extends Component {
     return Promise.resolve();
   }
   handleSelect(cooperate) {
-    const { setSelected } = this.props;
+    const { setSelected, setSelection } = this.props;
     setSelected(true);
-    window.console.log(cooperate);
+    setSelection(cooperate);
   }
   render() {
     const {
@@ -116,7 +118,7 @@ class App extends Component {
         );
       case fromGameState.SELECTING:
         if (!joined) return <Waiting message="waiting for next game" />;
-        if (selected) return <Waiting message="waiting for next round" />;
+        if (selected) return <Waiting message="waiting for round to end" />;
         return (
           <Playing
             gameState={fromGameState.SELECTING}
@@ -144,6 +146,7 @@ App.propTypes = {
   setJoined: PropTypes.func.isRequired,
   setPresenceKey: PropTypes.func.isRequired,
   setSelected: PropTypes.func.isRequired,
+  setSelection: PropTypes.func.isRequired,
 };
 App.defaultProps = {
   gameState: null,
@@ -166,5 +169,6 @@ export default connect(
     setJoined: fromJoined.setJoined,
     setPresenceKey: fromPresenceKey.setPresenceKey,
     setSelected: fromSelected.setSelected,
+    setSelection: fromSelection.setSelection,
   },
 )(App);

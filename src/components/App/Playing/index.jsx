@@ -34,7 +34,10 @@ class Playing extends Component {
     const { addMessage, gameState, messages, onSelect, paired } = this.props;
     return (
       <PlayingFrame>
-        <PlayingCards cover={gameState === PAIRED} onSelect={onSelect} />
+        <PlayingCards
+          cover={gameState === PAIRED}
+          onSelect={onSelect}
+        />
         <PlayingChat
           addMessage={addMessage}
           cover={

@@ -8,6 +8,7 @@ import messages from '../ducks/messages';
 import paired from '../ducks/paired';
 import presenceKey from '../ducks/presenceKey';
 import selected from '../ducks/selected';
+import selection from '../ducks/selection';
 
 export default combineReducers({
   authenticated,
@@ -19,4 +20,5 @@ export default combineReducers({
   paired,
   presenceKey,
   selected,
+  selection,
 });
