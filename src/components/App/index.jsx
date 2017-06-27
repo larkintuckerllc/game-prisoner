@@ -6,11 +6,13 @@ import 'firebase/auth';
 import 'firebase/database';
 import { FIREBASE_CONFIG, FIREBASE_EMAIL, RUNNING } from '../../strings';
 import { ServerException } from '../../util/exceptions';
+import * as fromAmount from '../../ducks/amount';
 import * as fromAuthenticated from '../../ducks/authenticated';
 import * as fromConnected from '../../ducks/connected';
 import * as fromGameState from '../../ducks/gameState';
 import * as fromJoined from '../../ducks/joined';
 import * as fromMessages from '../../ducks/messages';
+import * as fromOtherAmount from '../../ducks/otherAmount';
 import * as fromOtherSelection from '../../ducks/otherSelection';
 import * as fromPaired from '../../ducks/paired';
 import * as fromPresenceKey from '../../ducks/presenceKey';
@@ -47,7 +49,6 @@ class App extends Component {
       resetPresenceKey,
       setAuthenticated,
       setConnected,
-      setJoined,
       setPresenceKey,
     } = this.props;
     firebase.initializeApp(FIREBASE_CONFIG);
@@ -100,7 +101,9 @@ class App extends Component {
       joined,
       paired,
       presenceKey,
+      setAmount,
       setGameState,
+      setOtherAmount,
       setOtherSelection,
       setPaired,
     } = this.props;
@@ -117,7 +120,11 @@ class App extends Component {
         this.resetRound();
         break;
       case fromGameState.DISCUSSING:
-        if (joined) commands.push(firebase.database().ref(`paired/${presenceKey}`).once('value', snap => setPaired(snap.val())));
+        if (joined) {
+          commands.push(firebase.database().ref('amount').once('value', snap => setAmount(snap.val())));
+          commands.push(firebase.database().ref('otherAmount').once('value', snap => setOtherAmount(snap.val())));
+          commands.push(firebase.database().ref(`paired/${presenceKey}`).once('value', snap => setPaired(snap.val())));
+        }
         break;
       case fromGameState.SCORE:
         if (joined) commands.push(firebase.database().ref(`selection/${paired}`).once('value', snap => setOtherSelection(snap.val())));
@@ -207,10 +214,12 @@ App.propTypes = {
   resetSelection: PropTypes.func.isRequired,
   selected: PropTypes.bool.isRequired,
   selection: PropTypes.bool,
+  setAmount: PropTypes.func.isRequired,
   setAuthenticated: PropTypes.func.isRequired,
   setConnected: PropTypes.func.isRequired,
   setGameState: PropTypes.func.isRequired,
   setJoined: PropTypes.func.isRequired,
+  setOtherAmount: PropTypes.func.isRequired,
   setOtherSelection: PropTypes.func.isRequired,
   setPaired: PropTypes.func.isRequired,
   setPresenceKey: PropTypes.func.isRequired,
@@ -242,10 +251,12 @@ export default connect(
     resetPaired: fromPaired.resetPaired,
     resetPresenceKey: fromPresenceKey.resetPresenceKey,
     resetSelection: fromSelection.resetSelection,
+    setAmount: fromAmount.setAmount,
     setAuthenticated: fromAuthenticated.setAuthenticated,
     setConnected: fromConnected.setConnected,
     setGameState: fromGameState.setGameState,
     setJoined: fromJoined.setJoined,
+    setOtherAmount: fromOtherAmount.setOtherAmount,
     setOtherSelection: fromOtherSelection.setOtherSelection,
     setPaired: fromPaired.setPaired,
     setPresenceKey: fromPresenceKey.setPresenceKey,
