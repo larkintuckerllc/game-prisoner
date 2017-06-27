@@ -10,6 +10,7 @@ import * as fromAuthenticated from '../../ducks/authenticated';
 import * as fromConnected from '../../ducks/connected';
 import * as fromGameState from '../../ducks/gameState';
 import * as fromJoined from '../../ducks/joined';
+import * as fromMessages from '../../ducks/messages';
 import * as fromOtherSelection from '../../ducks/otherSelection';
 import * as fromPaired from '../../ducks/paired';
 import * as fromPresenceKey from '../../ducks/presenceKey';
@@ -48,7 +49,6 @@ class App extends Component {
       setConnected,
       setJoined,
       setPresenceKey,
-      setSelected,
     } = this.props;
     firebase.initializeApp(FIREBASE_CONFIG);
     firebase.auth().onAuthStateChanged((user) => {
@@ -65,12 +65,7 @@ class App extends Component {
               presenceRef.onDisconnect().remove();
             });
           } else {
-            // TODO: OTHERSELECTION
-            // TODO: SELECTION
-            setSelected(false);
-            // TODO: MESSAGES
-            // TODO: PAIRED
-            // BELOW IS OFFLINE ONLY
+            this.resetRound();
             setJoined(false);
             resetPresenceKey();
             setConnected(false);
@@ -81,6 +76,18 @@ class App extends Component {
       }
     });
     firebase.auth().signOut();
+  }
+  resetRound() {
+    const {
+      resetMessages,
+      resetOtherSelection,
+      resetSelection,
+      setSelected,
+    } = this.props;
+    resetOtherSelection();
+    setSelected(false);
+    resetSelection();
+    resetMessages();
   }
   handleGameState(gameStateSnap) {
     const {
@@ -94,6 +101,10 @@ class App extends Component {
     const gameState = gameStateSnap.val();
     const commands = [];
     switch (gameState) {
+      case fromGameState.STARTING:
+        setGameState(fromGameState.STARTING);
+        this.resetRound();
+        break;
       case fromGameState.PAIRED:
         if (joined) commands.push(firebase.database().ref(`paired/${presenceKey}`).once('value', snap => setPaired(snap.val())));
         break;
@@ -114,8 +125,8 @@ class App extends Component {
   }
   handleSelect(selection) {
     const { setSelected, setSelection } = this.props;
-    setSelected(true);
     setSelection(selection);
+    setSelected(true);
   }
   render() {
     const {
@@ -135,6 +146,9 @@ class App extends Component {
       case fromGameState.JOIN:
         if (!joined) return <Join onJoin={this.handleJoin} />;
         return <Waiting message="waiting for game to start" />;
+      case fromGameState.STARTING:
+        if (!joined) return <Waiting message="waiting for next game" />;
+        return <Connecting />;
       case fromGameState.PAIRED:
         if (!joined) return <Waiting message="waiting for next game" />;
         return (
@@ -175,7 +189,10 @@ App.propTypes = {
   otherSelection: PropTypes.bool,
   paired: PropTypes.string,
   presenceKey: PropTypes.string,
+  resetMessages: PropTypes.func.isRequired,
+  resetOtherSelection: PropTypes.func.isRequired,
   resetPresenceKey: PropTypes.func.isRequired,
+  resetSelection: PropTypes.func.isRequired,
   selected: PropTypes.bool.isRequired,
   selection: PropTypes.bool,
   setAuthenticated: PropTypes.func.isRequired,
@@ -208,7 +225,10 @@ export default connect(
     selection: fromSelection.getSelection(state),
   }),
   {
+    resetMessages: fromMessages.resetMessages,
+    resetOtherSelection: fromOtherSelection.resetOtherSelection,
     resetPresenceKey: fromPresenceKey.resetPresenceKey,
+    resetSelection: fromSelection.resetSelection,
     setAuthenticated: fromAuthenticated.setAuthenticated,
     setConnected: fromConnected.setConnected,
     setGameState: fromGameState.setGameState,

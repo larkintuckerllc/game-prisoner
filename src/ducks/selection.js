@@ -32,3 +32,7 @@ export const setSelection = value => (dispatch, getState) => {
     });
   });
 };
+export const resetSelection = () => ({
+  type: SET_SELECTION,
+  value: null,
+});

@@ -26,3 +26,7 @@ export const setOtherSelection = (value) => {
     value,
   });
 };
+export const resetOtherSelection = () => ({
+  type: SET_OTHER_SELECTION,
+  value: null,
+});

@@ -2,6 +2,7 @@ import { ACTION_PREFIX } from '../strings';
 
 // GAME_STATES
 export const JOIN = 'JOIN';
+export const STARTING = 'STARTING';
 export const PAIRED = 'PAIRED';
 export const SELECTING = 'SELECTING';
 export const SCORE = 'SCORE';

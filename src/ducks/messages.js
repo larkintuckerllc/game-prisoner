@@ -11,6 +11,7 @@ import { getPaired } from './paired';
 const reducerMountPoint = 'messages';
 // ACTIONS
 export const ADD_MESSAGE_SUCCESS = `${ACTION_PREFIX}ADD_MESSAGE_SUCCESS`;
+export const RESET_MESSAGES = `${ACTION_PREFIX}RESET_MESSAGES`;
 // SCHEMA
 const messageSchema = new schema.Entity('messages');
 // REDUCERS
@@ -21,6 +22,8 @@ const byId = (state = {}, action) => {
         ...state,
         ...action.response.entities.messages,
       };
+    case RESET_MESSAGES:
+      return {};
     default:
       return state;
   }
@@ -29,6 +32,8 @@ const ids = (state = [], action) => {
   switch (action.type) {
     case ADD_MESSAGE_SUCCESS:
       return [...state, action.response.result];
+    case RESET_MESSAGES:
+      return [];
     default:
       return state;
   }
@@ -76,3 +81,6 @@ export const addMessage = message => (dispatch, getState) => {
     });
   }
 };
+export const resetMessages = () => ({
+  type: RESET_MESSAGES,
+});
