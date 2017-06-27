@@ -66,7 +66,7 @@ class App extends Component {
             });
           } else {
             this.resetRound();
-            setJoined(false);
+            this.resetGame();
             resetPresenceKey();
             setConnected(false);
           }
@@ -77,10 +77,15 @@ class App extends Component {
     });
     firebase.auth().signOut();
   }
+  resetGame() {
+    const { setJoined } = this.props;
+    setJoined(false);
+  }
   resetRound() {
     const {
       resetMessages,
       resetOtherSelection,
+      resetPaired,
       resetSelection,
       setSelected,
     } = this.props;
@@ -88,6 +93,7 @@ class App extends Component {
     setSelected(false);
     resetSelection();
     resetMessages();
+    resetPaired();
   }
   handleGameState(gameStateSnap) {
     const {
@@ -101,6 +107,11 @@ class App extends Component {
     const gameState = gameStateSnap.val();
     const commands = [];
     switch (gameState) {
+      case fromGameState.JOIN:
+        this.resetGame();
+        setGameState(fromGameState.JOIN);
+        this.resetRound();
+        break;
       case fromGameState.STARTING:
         setGameState(fromGameState.STARTING);
         this.resetRound();
@@ -191,6 +202,7 @@ App.propTypes = {
   presenceKey: PropTypes.string,
   resetMessages: PropTypes.func.isRequired,
   resetOtherSelection: PropTypes.func.isRequired,
+  resetPaired: PropTypes.func.isRequired,
   resetPresenceKey: PropTypes.func.isRequired,
   resetSelection: PropTypes.func.isRequired,
   selected: PropTypes.bool.isRequired,
@@ -227,6 +239,7 @@ export default connect(
   {
     resetMessages: fromMessages.resetMessages,
     resetOtherSelection: fromOtherSelection.resetOtherSelection,
+    resetPaired: fromPaired.resetPaired,
     resetPresenceKey: fromPresenceKey.resetPresenceKey,
     resetSelection: fromSelection.resetSelection,
     setAuthenticated: fromAuthenticated.setAuthenticated,
