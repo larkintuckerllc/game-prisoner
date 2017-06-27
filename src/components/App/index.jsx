@@ -10,6 +10,7 @@ import * as fromAuthenticated from '../../ducks/authenticated';
 import * as fromConnected from '../../ducks/connected';
 import * as fromGameState from '../../ducks/gameState';
 import * as fromJoined from '../../ducks/joined';
+import * as fromOtherSelection from '../../ducks/otherSelection';
 import * as fromPresenceKey from '../../ducks/presenceKey';
 import * as fromSelected from '../../ducks/selected';
 import * as fromSelection from '../../ducks/selection';
@@ -87,26 +88,22 @@ class App extends Component {
     joinedKeyRef.onDisconnect().remove();
     return Promise.resolve();
   }
-  handleSelect(cooperate) {
+  handleSelect(selection) {
     const { setSelected, setSelection } = this.props;
     setSelected(true);
-    setSelection(cooperate);
+    setSelection(selection);
   }
   render() {
-    return (
-      <Score
-        self={true}
-        other={false}
-      />
-    );
-    /*
     const {
       authenticated,
       connected,
       joined,
       gameState,
+      otherSelection,
       presenceKey,
       selected,
+      selection,
+      setOtherSelection,
     } = this.props;
     if (RUNNING) return <Alert message="running in another window" />;
     if (!authenticated) return <Login onLogin={handleLogin} />;
@@ -137,12 +134,15 @@ class App extends Component {
       case fromGameState.SCORE:
         if (!joined) return <Waiting message="waiting for next game" />;
         return (
-          <Score />
+          <Score
+            self={selection}
+            setOtherSelection={setOtherSelection}
+            other={otherSelection}
+          />
         );
       default:
         return <div>DEFAULT</div>;
     }
-    */
   }
 }
 App.propTypes = {
@@ -150,21 +150,25 @@ App.propTypes = {
   connected: PropTypes.bool.isRequired,
   joined: PropTypes.bool.isRequired,
   gameState: PropTypes.string,
-  // eslint-disable-next-line
+  otherSelection: PropTypes.string,
   presenceKey: PropTypes.string,
   resetPresenceKey: PropTypes.func.isRequired,
   selected: PropTypes.bool.isRequired,
+  selection: PropTypes.bool,
   setAuthenticated: PropTypes.func.isRequired,
   setConnected: PropTypes.func.isRequired,
   setGameState: PropTypes.func.isRequired,
   setJoined: PropTypes.func.isRequired,
+  setOtherSelection: PropTypes.func.isRequired,
   setPresenceKey: PropTypes.func.isRequired,
   setSelected: PropTypes.func.isRequired,
   setSelection: PropTypes.func.isRequired,
 };
 App.defaultProps = {
   gameState: null,
+  otherSelection: null,
   presenceKey: null,
+  selection: null,
 };
 export default connect(
   state => ({
@@ -172,8 +176,10 @@ export default connect(
     connected: fromConnected.getConnected(state),
     joined: fromJoined.getJoined(state),
     gameState: fromGameState.getGameState(state),
+    otherSelection: fromOtherSelection.getOtherSelection(state),
     presenceKey: fromPresenceKey.getPresenceKey(state),
     selected: fromSelected.getSelected(state),
+    selection: fromSelection.getSelection(state),
   }),
   {
     resetPresenceKey: fromPresenceKey.resetPresenceKey,
@@ -181,6 +187,7 @@ export default connect(
     setConnected: fromConnected.setConnected,
     setGameState: fromGameState.setGameState,
     setJoined: fromJoined.setJoined,
+    setOtherSelection: fromOtherSelection.setOtherSelection,
     setPresenceKey: fromPresenceKey.setPresenceKey,
     setSelected: fromSelected.setSelected,
     setSelection: fromSelection.setSelection,

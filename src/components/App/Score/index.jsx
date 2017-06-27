@@ -1,34 +1,28 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { PropTypes } from 'prop-types';
-import styles from './index.css';
+import ScoreView from './ScoreView';
 
-const Score = ({ self, other }) => (
-  <div id={styles.root}>
-    <div id={styles.rootResults}>
-      <div>
-        <div>you</div>
-        <div className={styles.rootResultsResultIcon}>
-          <span
-            className={`glyphicon ${self ? 'glyphicon-thumbs-up' : 'glyphicon-thumbs-down'}`}
-            aria-hidden="true"
-          />
-        </div>
-      </div>
-      <div>
-        <div>them</div>
-        <div className={styles.rootResultsResultIcon}>
-          <span
-            className={`glyphicon ${other ? 'glyphicon-thumbs-up' : 'glyphicon-thumbs-down'}`}
-            aria-hidden="true"
-          />
-        </div>
-      </div>
-    </div>
-    <div id={styles.rootMessage}>waiting for next round</div>
-  </div>
-);
+class Score extends Component {
+  componentDidMount() {
+    const { setOtherSelection } = this.props;
+    setOtherSelection('true');
+  }
+  render() {
+    const { self, other } = this.props;
+    return (
+      <ScoreView
+        self={self}
+        other={other}
+      />
+    );
+  }
+}
 Score.propTypes = {
+  other: PropTypes.bool,
   self: PropTypes.bool.isRequired,
-  other: PropTypes.bool.isRequired,
+  setOtherSelection: PropTypes.func.isRequired,
+};
+Score.defaultProps = {
+  other: null,
 };
 export default Score;
