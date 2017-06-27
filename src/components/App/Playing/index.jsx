@@ -30,10 +30,13 @@ class Playing extends Component {
     });
   }
   render() {
-    const { addMessage, gameState, messages, onSelect } = this.props;
+    const { addMessage, amount, gameState, messages, onSelect, otherAmount } = this.props;
     return (
       <PlayingFrame>
-        <Scoring />
+        <Scoring
+          amount={amount}
+          otherAmount={otherAmount}
+        />
         <PlayingCards
           cover={gameState === DISCUSSING}
           onSelect={onSelect}
@@ -48,11 +51,13 @@ class Playing extends Component {
   }
 }
 Playing.propTypes = {
+  amount: PropTypes.number.isRequired,
   addMessage: PropTypes.func.isRequired,
   gameState: PropTypes.string.isRequired,
   // eslint-disable-next-line
   messages: PropTypes.array.isRequired,
   onSelect: PropTypes.func.isRequired,
+  otherAmount: PropTypes.number.isRequired,
   presenceKey: PropTypes.string.isRequired,
 };
 export default connect(state => ({

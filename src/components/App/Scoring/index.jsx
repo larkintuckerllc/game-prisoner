@@ -1,28 +1,35 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styles from './index.css';
 
-const Scoring = () => (
+const Scoring = ({ amount, otherAmount }) => (
   <div id={styles.root}>
     <div id={styles.rootRules}>
       <table>
-        <tr>
-          <td />
-          <td className={`${styles.title} ${styles.center}`}>you</td>
-          <td className={`${styles.title} ${styles.center}`}>them</td>
-        </tr>
-        <tr>
-          <td className={styles.title}>cooperate</td>
-          <td className={styles.center}>0</td>
-          <td className={styles.center}>3</td>
-        </tr>
-        <tr>
-          <td className={styles.title}>not</td>
-          <td className={styles.center}>2</td>
-          <td className={styles.center}>0</td>
-        </tr>
+        <tbody>
+          <tr>
+            <td />
+            <td className={`${styles.title} ${styles.center}`}>you</td>
+            <td className={`${styles.title} ${styles.center}`}>them</td>
+          </tr>
+          <tr>
+            <td className={styles.title}>cooperate</td>
+            <td className={styles.center}>0</td>
+            <td className={styles.center}>{otherAmount.toString()}</td>
+          </tr>
+          <tr>
+            <td className={styles.title}>not</td>
+            <td className={styles.center}>{amount.toString()}</td>
+            <td className={styles.center}>0</td>
+          </tr>
+        </tbody>
       </table>
     </div>
     <div id={styles.rootScore}><span className={styles.title}>Score:</span> 0</div>
   </div>
 );
+Scoring.propTypes = {
+  amount: PropTypes.number.isRequired,
+  otherAmount: PropTypes.number.isRequired,
+};
 export default Scoring;

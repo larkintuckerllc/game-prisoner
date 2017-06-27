@@ -3,9 +3,12 @@ import { PropTypes } from 'prop-types';
 import Scoring from '../Scoring';
 import styles from './index.css';
 
-const Score = ({ selection, otherSelection }) => (
+const Score = ({ amount, selection, otherAmount, otherSelection }) => (
   <div id={styles.root}>
-    <Scoring />
+    <Scoring
+      amount={amount}
+      otherAmount={otherAmount}
+    />
     <div id={styles.rootResults}>
       <div className={styles.rootResultsResult}>
         <div className={styles.rootResultsResultTitle}>you</div>
@@ -17,14 +20,16 @@ const Score = ({ selection, otherSelection }) => (
         </div>
         <div className={styles.rootResultsResultScore}>
           <table>
-            <tr>
-              <td className={styles.title}>you</td>
-              <td>0</td>
-            </tr>
-            <tr>
-              <td className={styles.title}>them</td>
-              <td>0</td>
-            </tr>
+            <tbody>
+              <tr>
+                <td className={styles.title}>you</td>
+                <td>{(selection ? 0 : amount).toString()}</td>
+              </tr>
+              <tr>
+                <td className={styles.title}>them</td>
+                <td>{(selection ? otherAmount : 0).toString()}</td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>
@@ -38,14 +43,16 @@ const Score = ({ selection, otherSelection }) => (
         </div>
         <div className={styles.rootResultsResultScore}>
           <table>
-            <tr>
-              <td className={styles.title}>you</td>
-              <td>0</td>
-            </tr>
-            <tr>
-              <td className={styles.title}>them</td>
-              <td>0</td>
-            </tr>
+            <tbody>
+              <tr>
+                <td className={styles.title}>you</td>
+                <td>{(otherSelection ? otherAmount : 0).toString()}</td>
+              </tr>
+              <tr>
+                <td className={styles.title}>them</td>
+                <td>{(otherSelection ? 0 : amount).toString()}</td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>
@@ -53,7 +60,9 @@ const Score = ({ selection, otherSelection }) => (
   </div>
 );
 Score.propTypes = {
+  amount: PropTypes.number.isRequired,
   selection: PropTypes.bool.isRequired,
+  otherAmount: PropTypes.number.isRequired,
   otherSelection: PropTypes.bool.isRequired,
 };
 export default Score;

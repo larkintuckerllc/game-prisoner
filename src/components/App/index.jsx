@@ -137,7 +137,7 @@ class App extends Component {
     const { presenceKey, setJoined } = this.props;
     setJoined(true);
     const joinedKeyRef = firebase.database().ref(`joined/${presenceKey}`);
-    joinedKeyRef.set(true);
+    joinedKeyRef.set(0);
     joinedKeyRef.onDisconnect().remove();
     return Promise.resolve();
   }
@@ -147,18 +147,13 @@ class App extends Component {
     setSelected(true);
   }
   render() {
-    return (
-      <Score
-        selection={true}
-        otherSelection={true}
-      />
-    );
-    /*
     const {
+      amount,
       authenticated,
       connected,
       joined,
       gameState,
+      otherAmount,
       otherSelection,
       presenceKey,
       selected,
@@ -178,8 +173,10 @@ class App extends Component {
         if (!joined) return <Waiting message="waiting for next game" />;
         return (
           <Playing
+            amount={amount}
             gameState={fromGameState.DISCUSSING}
             onSelect={() => {}}
+            otherAmount={otherAmount}
             presenceKey={presenceKey}
           />
         );
@@ -188,8 +185,10 @@ class App extends Component {
         if (selected) return <Waiting message="waiting for round to end" />;
         return (
           <Playing
+            amount={amount}
             gameState={fromGameState.SELECTING}
             onSelect={this.handleSelect}
+            otherAmount={otherAmount}
             presenceKey={presenceKey}
           />
         );
@@ -197,21 +196,24 @@ class App extends Component {
         if (!joined) return <Waiting message="waiting for next game" />;
         return (
           <Score
+            amount={amount}
             selection={selection}
+            otherAmount={otherAmount}
             otherSelection={otherSelection}
           />
         );
       default:
         return <Connecting />;
     }
-    */
   }
 }
 App.propTypes = {
+  amount: PropTypes.number,
   authenticated: PropTypes.bool.isRequired,
   connected: PropTypes.bool.isRequired,
   joined: PropTypes.bool.isRequired,
   gameState: PropTypes.string,
+  otherAmount: PropTypes.number,
   otherSelection: PropTypes.bool,
   paired: PropTypes.string,
   presenceKey: PropTypes.string,
@@ -235,7 +237,9 @@ App.propTypes = {
   setSelection: PropTypes.func.isRequired,
 };
 App.defaultProps = {
+  amount: null,
   gameState: null,
+  otherAmount: null,
   otherSelection: null,
   paired: null,
   presenceKey: null,
@@ -243,10 +247,12 @@ App.defaultProps = {
 };
 export default connect(
   state => ({
+    amount: fromAmount.getAmount(state),
     authenticated: fromAuthenticated.getAuthenticated(state),
     connected: fromConnected.getConnected(state),
     joined: fromJoined.getJoined(state),
     gameState: fromGameState.getGameState(state),
+    otherAmount: fromOtherAmount.getOtherAmount(state),
     otherSelection: fromOtherSelection.getOtherSelection(state),
     paired: fromPaired.getPaired(state),
     presenceKey: fromPresenceKey.getPresenceKey(state),
