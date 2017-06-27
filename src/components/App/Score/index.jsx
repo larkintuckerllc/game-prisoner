@@ -1,30 +1,34 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { PropTypes } from 'prop-types';
-import firebase from 'firebase/app';
-import ScoreView from './ScoreView';
+import styles from './index.css';
 
-class Score extends Component {
-  componentDidMount() {
-    const { paired, setOtherSelection } = this.props;
-    firebase.database().ref(`selection/${paired}`).once('value', snap => setOtherSelection(snap.val()));
-  }
-  render() {
-    const { selection, otherSelection } = this.props;
-    return (
-      <ScoreView
-        selection={selection}
-        otherSelection={otherSelection}
-      />
-    );
-  }
-}
+const Score = ({ selection, otherSelection }) => (
+  <div id={styles.root}>
+    <div id={styles.rootResults}>
+      <div>
+        <div>you</div>
+        <div className={styles.rootResultsResultIcon}>
+          <span
+            className={`glyphicon ${selection ? 'glyphicon-thumbs-up' : 'glyphicon-thumbs-down'}`}
+            aria-hidden="true"
+          />
+        </div>
+      </div>
+      <div>
+        <div>them</div>
+        <div className={styles.rootResultsResultIcon}>
+          <span
+            className={`glyphicon ${otherSelection ? 'glyphicon-thumbs-up' : 'glyphicon-thumbs-down'}`}
+            aria-hidden="true"
+          />
+        </div>
+      </div>
+    </div>
+    <div id={styles.rootMessage}>waiting for next round</div>
+  </div>
+);
 Score.propTypes = {
-  otherSelection: PropTypes.bool,
-  paired: PropTypes.string.isRequired,
   selection: PropTypes.bool.isRequired,
-  setOtherSelection: PropTypes.func.isRequired,
-};
-Score.defaultProps = {
-  otherSelection: null,
+  otherSelection: PropTypes.bool.isRequired,
 };
 export default Score;

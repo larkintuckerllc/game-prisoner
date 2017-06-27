@@ -14,8 +14,7 @@ class Playing extends Component {
     this.handleChildAdded = this.handleChildAdded.bind(this);
   }
   componentDidMount() {
-    const { presenceKey, setPaired } = this.props;
-    firebase.database().ref(`paired/${presenceKey}`).once('value', snap => setPaired(snap.val()));
+    const { presenceKey } = this.props;
     firebase.database().ref(`messages/${presenceKey}`).on('child_added', this.handleChildAdded);
   }
   componentWillUnmount() {
@@ -30,7 +29,7 @@ class Playing extends Component {
     });
   }
   render() {
-    const { addMessage, gameState, messages, onSelect, paired } = this.props;
+    const { addMessage, gameState, messages, onSelect } = this.props;
     return (
       <PlayingFrame>
         <PlayingCards
@@ -39,10 +38,7 @@ class Playing extends Component {
         />
         <PlayingChat
           addMessage={addMessage}
-          cover={
-            gameState === SELECTING ||
-            paired === null
-          }
+          cover={gameState === SELECTING}
           messages={messages}
         />
       </PlayingFrame>
@@ -55,12 +51,7 @@ Playing.propTypes = {
   // eslint-disable-next-line
   messages: PropTypes.array.isRequired,
   onSelect: PropTypes.func.isRequired,
-  paired: PropTypes.string,
   presenceKey: PropTypes.string.isRequired,
-  setPaired: PropTypes.func.isRequired,
-};
-Playing.defaultProps = {
-  paired: null,
 };
 export default connect(state => ({
   messages: fromMessages.getMessages(state),

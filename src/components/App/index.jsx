@@ -37,6 +37,7 @@ const handleLogin = password => (
 class App extends Component {
   constructor(props) {
     super(props);
+    this.handleGameState = this.handleGameState.bind(this);
     this.handleJoin = this.handleJoin.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
   }
@@ -46,7 +47,6 @@ class App extends Component {
       setAuthenticated,
       setConnected,
       setJoined,
-      setGameState,
       setPresenceKey,
       setSelected,
     } = this.props;
@@ -65,21 +65,44 @@ class App extends Component {
               presenceRef.onDisconnect().remove();
             });
           } else {
-            // TODO: CLEANING UP IF FALL OFFLINE
+            // TODO: OTHERSELECTION
+            // TODO: SELECTION
             setSelected(false);
+            // TODO: MESSAGES
+            // TODO: PAIRED
+            // BELOW IS OFFLINE ONLY
             setJoined(false);
             resetPresenceKey();
             setConnected(false);
           }
         });
         // STATE
-        firebase.database().ref('gameState').on('value', (snap) => {
-          const gameState = snap.val();
-          setGameState(gameState);
-        });
+        firebase.database().ref('gameState').on('value', this.handleGameState);
       }
     });
     firebase.auth().signOut();
+  }
+  handleGameState(gameStateSnap) {
+    const {
+      joined,
+      paired,
+      presenceKey,
+      setGameState,
+      setOtherSelection,
+      setPaired,
+    } = this.props;
+    const gameState = gameStateSnap.val();
+    const commands = [];
+    switch (gameState) {
+      case fromGameState.PAIRED:
+        if (joined) commands.push(firebase.database().ref(`paired/${presenceKey}`).once('value', snap => setPaired(snap.val())));
+        break;
+      case fromGameState.SCORE:
+        if (joined) commands.push(firebase.database().ref(`selection/${paired}`).once('value', snap => setOtherSelection(snap.val())));
+        break;
+      default:
+    }
+    Promise.all(commands).then(() => setGameState(gameState));
   }
   handleJoin() {
     const { presenceKey, setJoined } = this.props;
@@ -101,12 +124,9 @@ class App extends Component {
       joined,
       gameState,
       otherSelection,
-      paired,
       presenceKey,
       selected,
       selection,
-      setOtherSelection,
-      setPaired,
     } = this.props;
     if (RUNNING) return <Alert message="running in another window" />;
     if (!authenticated) return <Login onLogin={handleLogin} />;
@@ -121,9 +141,7 @@ class App extends Component {
           <Playing
             gameState={fromGameState.PAIRED}
             onSelect={() => {}}
-            paired={paired}
             presenceKey={presenceKey}
-            setPaired={setPaired}
           />
         );
       case fromGameState.SELECTING:
@@ -133,9 +151,7 @@ class App extends Component {
           <Playing
             gameState={fromGameState.SELECTING}
             onSelect={this.handleSelect}
-            paired={paired}
             presenceKey={presenceKey}
-            setPaired={setPaired}
           />
         );
       case fromGameState.SCORE:
@@ -143,9 +159,7 @@ class App extends Component {
         return (
           <Score
             selection={selection}
-            setOtherSelection={setOtherSelection}
             otherSelection={otherSelection}
-            paired={paired}
           />
         );
       default:
