@@ -147,12 +147,10 @@ class App extends Component {
     setSelected(true);
   }
   render() {
-    const { presenceKey } = this.props;
     return (
-      <Playing
-        gameState={fromGameState.DISCUSSING}
-        onSelect={() => {}}
-        presenceKey={presenceKey}
+      <Score
+        selection={true}
+        otherSelection={true}
       />
     );
     /*
