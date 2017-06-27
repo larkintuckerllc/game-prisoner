@@ -1,28 +1,30 @@
 import React, { Component } from 'react';
 import { PropTypes } from 'prop-types';
+import firebase from 'firebase/app';
 import ScoreView from './ScoreView';
 
 class Score extends Component {
   componentDidMount() {
-    const { setOtherSelection } = this.props;
-    setOtherSelection('true');
+    const { paired, setOtherSelection } = this.props;
+    firebase.database().ref(`selection/${paired}`).once('value', snap => setOtherSelection(snap.val()));
   }
   render() {
-    const { self, other } = this.props;
+    const { selection, otherSelection } = this.props;
     return (
       <ScoreView
-        self={self}
-        other={other}
+        selection={selection}
+        otherSelection={otherSelection}
       />
     );
   }
 }
 Score.propTypes = {
-  other: PropTypes.bool,
-  self: PropTypes.bool.isRequired,
+  otherSelection: PropTypes.bool,
+  paired: PropTypes.string.isRequired,
+  selection: PropTypes.bool.isRequired,
   setOtherSelection: PropTypes.func.isRequired,
 };
 Score.defaultProps = {
-  other: null,
+  otherSelection: null,
 };
 export default Score;

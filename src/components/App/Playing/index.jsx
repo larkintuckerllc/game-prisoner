@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import firebase from 'firebase/app';
 import { PAIRED, SELECTING } from '../../../ducks/gameState';
 import * as fromMessages from '../../../ducks/messages';
-import * as fromPaired from '../../../ducks/paired';
 import PlayingCards from './PlayingCards';
 import PlayingChat from './PlayingChat';
 import PlayingFrame from './PlayingFrame';
@@ -65,8 +64,6 @@ Playing.defaultProps = {
 };
 export default connect(state => ({
   messages: fromMessages.getMessages(state),
-  paired: fromPaired.getPaired(state),
 }), {
   addMessage: fromMessages.addMessage,
-  setPaired: fromPaired.setPaired,
 })(Playing);

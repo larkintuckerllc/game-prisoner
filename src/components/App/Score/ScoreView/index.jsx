@@ -2,8 +2,8 @@ import React from 'react';
 import { PropTypes } from 'prop-types';
 import styles from './index.css';
 
-const Score = ({ self, other }) => {
-  if (other === null) return <div id={styles.root} />;
+const Score = ({ selection, otherSelection }) => {
+  if (otherSelection === null) return <div id={styles.root} />;
   return (
     <div id={styles.root}>
       <div id={styles.rootResults}>
@@ -11,7 +11,7 @@ const Score = ({ self, other }) => {
           <div>you</div>
           <div className={styles.rootResultsResultIcon}>
             <span
-              className={`glyphicon ${self ? 'glyphicon-thumbs-up' : 'glyphicon-thumbs-down'}`}
+              className={`glyphicon ${selection ? 'glyphicon-thumbs-up' : 'glyphicon-thumbs-down'}`}
               aria-hidden="true"
             />
           </div>
@@ -20,7 +20,7 @@ const Score = ({ self, other }) => {
           <div>them</div>
           <div className={styles.rootResultsResultIcon}>
             <span
-              className={`glyphicon ${other ? 'glyphicon-thumbs-up' : 'glyphicon-thumbs-down'}`}
+              className={`glyphicon ${otherSelection ? 'glyphicon-thumbs-up' : 'glyphicon-thumbs-down'}`}
               aria-hidden="true"
             />
           </div>
@@ -31,10 +31,10 @@ const Score = ({ self, other }) => {
   );
 };
 Score.propTypes = {
-  self: PropTypes.bool.isRequired,
-  other: PropTypes.bool,
+  selection: PropTypes.bool.isRequired,
+  otherSelection: PropTypes.bool,
 };
 Score.defaultProps = {
-  other: null,
+  otherSelection: null,
 };
 export default Score;

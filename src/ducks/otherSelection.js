@@ -14,7 +14,7 @@ export default (state = null, action) => {
   }
 };
 // ACCESSORS AKA SELECTORS
-export const getOtherSelection = state => state.otherSelected;
+export const getOtherSelection = state => state.otherSelection;
 // VALIDATORS
 const validOtherSelection = value =>
   !(value === undefined || typeof value !== 'boolean');
