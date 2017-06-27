@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
 import firebase from 'firebase/app';
-import { PAIRED, SELECTING } from '../../../ducks/gameState';
+import { DISCUSSING, SELECTING } from '../../../ducks/gameState';
 import * as fromMessages from '../../../ducks/messages';
 import PlayingCards from './PlayingCards';
 import PlayingChat from './PlayingChat';
@@ -33,7 +33,7 @@ class Playing extends Component {
     return (
       <PlayingFrame>
         <PlayingCards
-          cover={gameState === PAIRED}
+          cover={gameState === DISCUSSING}
           onSelect={onSelect}
         />
         <PlayingChat

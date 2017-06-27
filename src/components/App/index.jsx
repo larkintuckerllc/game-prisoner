@@ -105,7 +105,7 @@ class App extends Component {
         setGameState(fromGameState.STARTING);
         this.resetRound();
         break;
-      case fromGameState.PAIRED:
+      case fromGameState.DISCUSSING:
         if (joined) commands.push(firebase.database().ref(`paired/${presenceKey}`).once('value', snap => setPaired(snap.val())));
         break;
       case fromGameState.SCORE:
@@ -149,11 +149,11 @@ class App extends Component {
       case fromGameState.STARTING:
         if (!joined) return <Waiting message="waiting for next game" />;
         return <Connecting />;
-      case fromGameState.PAIRED:
+      case fromGameState.DISCUSSING:
         if (!joined) return <Waiting message="waiting for next game" />;
         return (
           <Playing
-            gameState={fromGameState.PAIRED}
+            gameState={fromGameState.DISCUSSING}
             onSelect={() => {}}
             presenceKey={presenceKey}
           />
