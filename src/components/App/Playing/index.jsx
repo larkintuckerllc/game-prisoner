@@ -7,6 +7,7 @@ import * as fromMessages from '../../../ducks/messages';
 import PlayingCards from './PlayingCards';
 import PlayingChat from './PlayingChat';
 import PlayingFrame from './PlayingFrame';
+import Scoring from '../Scoring';
 
 class Playing extends Component {
   constructor(props) {
@@ -32,6 +33,7 @@ class Playing extends Component {
     const { addMessage, gameState, messages, onSelect } = this.props;
     return (
       <PlayingFrame>
+        <Scoring />
         <PlayingCards
           cover={gameState === DISCUSSING}
           onSelect={onSelect}

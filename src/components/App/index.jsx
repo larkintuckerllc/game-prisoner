@@ -147,6 +147,15 @@ class App extends Component {
     setSelected(true);
   }
   render() {
+    const { presenceKey } = this.props;
+    return (
+      <Playing
+        gameState={fromGameState.DISCUSSING}
+        onSelect={() => {}}
+        presenceKey={presenceKey}
+      />
+    );
+    /*
     const {
       authenticated,
       connected,
@@ -197,6 +206,7 @@ class App extends Component {
       default:
         return <Connecting />;
     }
+    */
   }
 }
 App.propTypes = {

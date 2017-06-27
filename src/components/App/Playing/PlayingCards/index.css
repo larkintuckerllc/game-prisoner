@@ -1,6 +1,6 @@
 #root {
   position: relative;
-  flex: 1 0 50%;
+  flex: 0 0 150px;
   display: flex;
   justify-content: space-around;
   width: 100%;

@@ -1,6 +1,6 @@
 #root {
   position: relative;
-  flex: 1 0 50%;
+  flex: 1 0 0px;
   display: flex;
   flex-direction: column;
   width: 100%;
