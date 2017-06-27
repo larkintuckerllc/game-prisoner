@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './index.css';
 
-const Scoring = ({ amount, otherAmount }) => (
+const Scoring = ({ amount, otherAmount, score }) => (
   <div id={styles.root}>
     <div id={styles.rootRules}>
       <table>
@@ -25,11 +25,12 @@ const Scoring = ({ amount, otherAmount }) => (
         </tbody>
       </table>
     </div>
-    <div id={styles.rootScore}><span className={styles.title}>Score:</span> 0</div>
+    <div id={styles.rootScore}><span className={styles.title}>Score: </span>{score.toString()}</div>
   </div>
 );
 Scoring.propTypes = {
   amount: PropTypes.number.isRequired,
   otherAmount: PropTypes.number.isRequired,
+  score: PropTypes.number.isRequired,
 };
 export default Scoring;

@@ -3,11 +3,12 @@ import { PropTypes } from 'prop-types';
 import Scoring from '../Scoring';
 import styles from './index.css';
 
-const Score = ({ amount, selection, otherAmount, otherSelection }) => (
+const Score = ({ amount, selection, otherAmount, otherSelection, score }) => (
   <div id={styles.root}>
     <Scoring
       amount={amount}
       otherAmount={otherAmount}
+      score={score}
     />
     <div id={styles.rootResults}>
       <div className={styles.rootResultsResult}>
@@ -64,5 +65,6 @@ Score.propTypes = {
   selection: PropTypes.bool.isRequired,
   otherAmount: PropTypes.number.isRequired,
   otherSelection: PropTypes.bool.isRequired,
+  score: PropTypes.number.isRequired,
 };
 export default Score;

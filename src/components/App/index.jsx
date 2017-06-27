@@ -16,6 +16,7 @@ import * as fromOtherAmount from '../../ducks/otherAmount';
 import * as fromOtherSelection from '../../ducks/otherSelection';
 import * as fromPaired from '../../ducks/paired';
 import * as fromPresenceKey from '../../ducks/presenceKey';
+import * as fromScore from '../../ducks/score';
 import * as fromSelected from '../../ducks/selected';
 import * as fromSelection from '../../ducks/selection';
 import Connecting from './Connecting';
@@ -79,7 +80,8 @@ class App extends Component {
     firebase.auth().signOut();
   }
   resetGame() {
-    const { setJoined } = this.props;
+    const { setJoined, setScore } = this.props;
+    setScore(0);
     setJoined(false);
   }
   resetRound() {
@@ -106,6 +108,7 @@ class App extends Component {
       setOtherAmount,
       setOtherSelection,
       setPaired,
+      setScore,
     } = this.props;
     const gameState = gameStateSnap.val();
     const commands = [];
@@ -127,7 +130,10 @@ class App extends Component {
         }
         break;
       case fromGameState.SCORE:
-        if (joined) commands.push(firebase.database().ref(`selection/${paired}`).once('value', snap => setOtherSelection(snap.val())));
+        if (joined) {
+          commands.push(firebase.database().ref(`selection/${paired}`).once('value', snap => setOtherSelection(snap.val())));
+          commands.push(firebase.database().ref(`joined/${presenceKey}`).once('value', snap => setScore(snap.val())));
+        }
         break;
       default:
     }
@@ -156,6 +162,7 @@ class App extends Component {
       otherAmount,
       otherSelection,
       presenceKey,
+      score,
       selected,
       selection,
     } = this.props;
@@ -178,6 +185,7 @@ class App extends Component {
             onSelect={() => {}}
             otherAmount={otherAmount}
             presenceKey={presenceKey}
+            score={score}
           />
         );
       case fromGameState.SELECTING:
@@ -190,6 +198,7 @@ class App extends Component {
             onSelect={this.handleSelect}
             otherAmount={otherAmount}
             presenceKey={presenceKey}
+            score={score}
           />
         );
       case fromGameState.SCORE:
@@ -200,6 +209,7 @@ class App extends Component {
             selection={selection}
             otherAmount={otherAmount}
             otherSelection={otherSelection}
+            score={score}
           />
         );
       default:
@@ -222,6 +232,7 @@ App.propTypes = {
   resetPaired: PropTypes.func.isRequired,
   resetPresenceKey: PropTypes.func.isRequired,
   resetSelection: PropTypes.func.isRequired,
+  score: PropTypes.number.isRequired,
   selected: PropTypes.bool.isRequired,
   selection: PropTypes.bool,
   setAmount: PropTypes.func.isRequired,
@@ -233,6 +244,7 @@ App.propTypes = {
   setOtherSelection: PropTypes.func.isRequired,
   setPaired: PropTypes.func.isRequired,
   setPresenceKey: PropTypes.func.isRequired,
+  setScore: PropTypes.func.isRequired,
   setSelected: PropTypes.func.isRequired,
   setSelection: PropTypes.func.isRequired,
 };
@@ -256,6 +268,7 @@ export default connect(
     otherSelection: fromOtherSelection.getOtherSelection(state),
     paired: fromPaired.getPaired(state),
     presenceKey: fromPresenceKey.getPresenceKey(state),
+    score: fromScore.getScore(state),
     selected: fromSelected.getSelected(state),
     selection: fromSelection.getSelection(state),
   }),
@@ -274,6 +287,7 @@ export default connect(
     setOtherSelection: fromOtherSelection.setOtherSelection,
     setPaired: fromPaired.setPaired,
     setPresenceKey: fromPresenceKey.setPresenceKey,
+    setScore: fromScore.setScore,
     setSelected: fromSelected.setSelected,
     setSelection: fromSelection.setSelection,
   },

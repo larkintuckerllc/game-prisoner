@@ -10,6 +10,7 @@ import otherAmount from '../ducks/otherAmount';
 import otherSelection from '../ducks/otherSelection';
 import paired from '../ducks/paired';
 import presenceKey from '../ducks/presenceKey';
+import score from '../ducks/score';
 import selected from '../ducks/selected';
 import selection from '../ducks/selection';
 
@@ -25,6 +26,7 @@ export default combineReducers({
   otherSelection,
   paired,
   presenceKey,
+  score,
   selected,
   selection,
 });

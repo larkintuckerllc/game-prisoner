@@ -30,12 +30,13 @@ class Playing extends Component {
     });
   }
   render() {
-    const { addMessage, amount, gameState, messages, onSelect, otherAmount } = this.props;
+    const { addMessage, amount, gameState, messages, onSelect, otherAmount, score } = this.props;
     return (
       <PlayingFrame>
         <Scoring
           amount={amount}
           otherAmount={otherAmount}
+          score={score}
         />
         <PlayingCards
           cover={gameState === DISCUSSING}
@@ -59,6 +60,7 @@ Playing.propTypes = {
   onSelect: PropTypes.func.isRequired,
   otherAmount: PropTypes.number.isRequired,
   presenceKey: PropTypes.string.isRequired,
+  score: PropTypes.number.isRequired,
 };
 export default connect(state => ({
   messages: fromMessages.getMessages(state),
